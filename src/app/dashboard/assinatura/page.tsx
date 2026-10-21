@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -9,7 +9,7 @@ import { Plan, Subscription, Profile } from '@/types/database';
 import { formatCurrency, formatDateBR } from '@/lib/formatters';
 import { CreditCard, CheckCircle2, Sparkles, ShieldCheck, AlertCircle } from 'lucide-react';
 
-export default function AssinaturaPage() {
+function AssinaturaContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
@@ -62,7 +62,6 @@ export default function AssinaturaPage() {
 
       const data = await res.json();
       if (data.initPoint) {
-        // Redireciona para o checkout oficial do Mercado Pago
         window.location.href = data.initPoint;
       } else if (data.sandboxInitPoint) {
         window.location.href = data.sandboxInitPoint;
@@ -231,5 +230,19 @@ export default function AssinaturaPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function AssinaturaPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-600 text-sm font-semibold">
+          Carregando informações da assinatura...
+        </div>
+      }
+    >
+      <AssinaturaContent />
+    </Suspense>
   );
 }
