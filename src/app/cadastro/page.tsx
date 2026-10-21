@@ -44,33 +44,61 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
-      const { data, error } = await supabase.auth.signUp({
+      let registered = false;
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName: fullName.trim(),
+            email: email.trim(),
+            password,
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            registered = true;
+          } else {
+            setErrorMessage(data.error || 'Não foi possível cadastrar.');
+            return;
+          }
+        }
+      } catch (fetchErr) {
+        console.warn('API interna offline, usando fallback direto do Supabase...', fetchErr);
+      }
+
+      if (!registered) {
+        // Fallback direto via Supabase Auth
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            data: { full_name: fullName.trim() },
+          },
+        });
+
+        if (signUpError && !signUpError.message.includes('already')) {
+          setErrorMessage(signUpError.message);
+          return;
+        }
+      }
+
+      // Login automático instantâneo
+      const { error: loginError } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
-        options: {
-          data: {
-            full_name: fullName.trim(),
-          },
-          emailRedirectTo: `${siteUrl}/auth/callback`,
-        },
       });
 
-      if (error) {
-        console.error('Erro no cadastro Supabase:', error);
-        setErrorMessage(error.message || 'Não foi possível concluir o cadastro. Verifique os dados e tente novamente.');
-        return;
-      }
-
-      // Se o Supabase exigir confirmação de e-mail:
-      if (data.user && !data.session) {
-        setSuccessNotice(true);
-      } else if (data.session) {
+      if (!loginError) {
         router.push('/dashboard');
         router.refresh();
+      } else {
+        router.push('/login?cadastrado=true');
       }
     } catch (err: any) {
-      setErrorMessage('Erro ao criar conta. Tente novamente mais tarde.');
+      setErrorMessage(`Falha na requisição: ${err.message || 'Erro de conexão'}`);
     } finally {
       setLoading(false);
     }

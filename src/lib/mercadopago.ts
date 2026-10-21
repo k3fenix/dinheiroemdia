@@ -12,14 +12,34 @@ interface MercadoPagoPreferencePayload {
   };
 }
 
+import { createAdminClient } from './supabase/admin';
+
+export async function getMercadoPagoAccessToken(): Promise<string> {
+  try {
+    const admin = createAdminClient();
+    const { data } = await admin
+      .from('app_settings')
+      .select('public_value')
+      .eq('key', 'mercadopago_credentials')
+      .maybeSingle();
+
+    if (data?.public_value?.accessToken) {
+      return data.public_value.accessToken;
+    }
+  } catch (e) {
+    // fallback para variavel de ambiente
+  }
+  return process.env.MERCADO_PAGO_ACCESS_TOKEN || '';
+}
+
 /**
  * Criação de Preferência de Checkout / Assinatura do Mercado Pago
  * Executado EXCLUSIVAMENTE no servidor.
  */
 export async function createMercadoPagoPreference(payload: MercadoPagoPreferencePayload) {
-  const token = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+  const token = await getMercadoPagoAccessToken();
   if (!token) {
-    throw new Error('MERCADO_PAGO_ACCESS_TOKEN não está configurado.');
+    throw new Error('As credenciais do Mercado Pago não estão configuradas. Por favor, acesse o Painel Administrativo em Configurações para inserir seu Access Token.');
   }
 
   const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
