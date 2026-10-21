@@ -57,9 +57,8 @@ export default function RegisterPage() {
       });
 
       if (error) {
-        setErrorMessage(error.message.includes('already registered')
-          ? 'Este e-mail já possui cadastro. Faça login ou recupere sua senha.'
-          : 'Não foi possível concluir o cadastro. Verifique os dados e tente novamente.');
+        console.error('Erro no cadastro Supabase:', error);
+        setErrorMessage(error.message || 'Não foi possível concluir o cadastro. Verifique os dados e tente novamente.');
         return;
       }
 
@@ -243,11 +242,17 @@ export default function RegisterPage() {
                 </button>
               </form>
 
-              <div className="mt-6 pt-6 border-t border-slate-100 text-center">
+              <div className="mt-6 pt-6 border-t border-slate-100 text-center space-y-2">
                 <p className="text-sm text-slate-600">
                   Já possui uma conta?{' '}
                   <Link href="/login" className="font-bold text-brand-700 hover:text-brand-800">
                     Acessar minha conta
+                  </Link>
+                </p>
+                <p className="text-xs text-slate-400">
+                  É o administrador da plataforma?{' '}
+                  <Link href="/setup-admin" className="text-amber-600 font-semibold hover:underline">
+                    Ativar conta de Administrador
                   </Link>
                 </p>
               </div>

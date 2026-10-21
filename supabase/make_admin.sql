@@ -5,7 +5,7 @@
 
 DO $$
 DECLARE
-  v_user_email TEXT := 'seu-email-aqui@dominio.com'; -- Substitua pelo e-mail do administrador
+  v_user_email TEXT := 'lucianoalkine@gmail.com'; -- E-mail do administrador Luciano
   v_user_id UUID;
 BEGIN
   SELECT id INTO v_user_id FROM auth.users WHERE email = v_user_email;
