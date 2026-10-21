@@ -1,0 +1,16 @@
+{
+  "name": "Cadê Meu Dinheiro?",
+  "short_name": "Meu Dinheiro",
+  "description": "Descubra para onde seu dinheiro vai. Encontre oportunidades para economizar sem conectar conta bancária.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

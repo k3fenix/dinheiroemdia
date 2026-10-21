@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-scale: 1;
+}
+
+body {
+  color: #0f172a;
+  background-color: #f8fafc;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background com padrão sutil premium */
+.bg-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(226, 232, 240, 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
+}
+
+.glow-emerald {
+  background: radial-gradient(circle at 50% 0%, rgba(22, 163, 74, 0.15) 0%, rgba(248, 250, 252, 0) 70%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Escalas de Acessibilidade */
+html[data-font-scale="large"] {
+  font-size: 115%;
+}
+
+html[data-font-scale="extra-large"] {
+  font-size: 130%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+/* Área de toque acessível para mobile */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Suporte de Impressão para Relatórios */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
